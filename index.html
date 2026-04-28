@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ketamine & Neural Circuits in TRD | Interactive Wiki</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            neuro: {
+              50: '#f4f7f6',
+              100: '#e4ebe9',
+              200: '#cbdad6',
+              500: '#4a7c73',
+              700: '#2c4d47',
+              900: '#1a2e2a'
+            },
+            warm: {
+              50: '#fdfbf7',
+              100: '#f4efe6',
+              200: '#e5d8c5'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            serif: ['Georgia', 'Merriweather', 'serif']
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body { background: #fdfbf7; color: #1a2e2a; }
+    .view-content { animation: fadeIn 0.35s ease-in-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .chart-container {
+      position: relative;
+      width: 100%;
+      max-width: 820px;
+      margin-left: auto;
+      margin-right: auto;
+      height: 40vh;
+      max-height: 430px;
+      min-height: 300px;
+    }
+    .brain-region-card {
+      transition: all 0.25s ease;
+      cursor: pointer;
+      border-left: 4px solid transparent;
+    }
+    .brain-region-card:hover,
+    .brain-region-active {
+      border-left-color: #4a7c73;
+      background-color: #e4ebe9;
+      transform: translateY(-2px);
+    }
+    .number-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 9999px;
+      background: #e4ebe9;
+      color: #2c4d47;
+      font-weight: 700;
+      margin-right: 0.75rem;
+      flex-shrink: 0;
+    }
+    .footnote { color: #2c4d47; font-weight: 700; vertical-align: super; font-size: 0.75em; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #f4efe6; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+  </style>
+</head>
+
+<body class="flex h-screen overflow-hidden font-sans antialiased">
+  <header class="md:hidden fixed top-0 left-0 right-0 h-16 bg-neuro-900 text-white z-50 flex items-center justify-between px-4 shadow-lg">
+    <h1 class="text-lg font-bold">NeuroWiki: Ketamine</h1>
+    <button id="mobile-menu-btn" class="p-2 focus:outline-none" aria-label="Open navigation">
+      <span class="text-2xl">☰</span>
+    </button>
+  </header>
+
+  <nav id="sidebar" class="w-72 bg-neuro-900 text-neuro-50 h-full flex-shrink-0 absolute md:relative z-40 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out pt-16 md:pt-0 shadow-2xl md:shadow-none overflow-y-auto">
+    <div class="p-6">
+      <h1 class="text-3xl font-serif font-bold text-warm-50 mb-2">NeuroWiki</h1>
+      <p class="text-xs text-neuro-100 opacity-75 mb-6 border-b border-neuro-700 pb-4">Effects of Ketamine on Neural Circuits in Treatment-Resistant Depression</p>
+
+      <ul class="space-y-2">
+        <li><button onclick="navigate('intro')" class="nav-link w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-neuro-700 bg-neuro-700" data-target="intro">⌂ Introduction & TOC</button></li>
+        <li><button onclick="navigate('history')" class="nav-link w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-neuro-700" data-target="history">⏳ 1. History</button></li>
+        <li><button onclick="navigate('rapid')" class="nav-link w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-neuro-700" data-target="rapid">📈 2. Rapid Antidepressant</button></li>
+        <li><button onclick="navigate('circuits')" class="nav-link w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-neuro-700" data-target="circuits">🧠 3. Neural Circuits</button></li>
+        <li><button onclick="navigate('effects')" class="nav-link w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-neuro-700" data-target="effects">⚡ 4. Neural Circuit Effects</button></li>
+        <li><button onclick="navigate('connectivity')" class="nav-link w-full text-left px-4 py-3 pl-8 rounded-xl text-sm font-medium transition-colors hover:bg-neuro-700" data-target="connectivity">🔗 4.1 Functional Connectivity</button></li>
+        <li><button onclick="navigate('plasticity')" class="nav-link w-full text-left px-4 py-3 pl-8 rounded-xl text-sm font-medium transition-colors hover:bg-neuro-700" data-target="plasticity">⚙ 4.2 Synaptic Plasticity</button></li>
+        <li><button onclick="navigate('debates')" class="nav-link w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-neuro-700" data-target="debates">⚖ 5. Evidence & Debates</button></li>
+        <li><button onclick="navigate('references')" class="nav-link w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-neuro-700" data-target="references">📚 6. References</button></li>
+      </ul>
+
+      <div class="mt-8 p-4 bg-neuro-700/50 rounded-2xl text-xs leading-relaxed text-neuro-100">
+        <strong class="text-white">Wiki tip:</strong> Use this as a visual version for studying or presentation. For Moodle, you can paste the written text and add figures/charts as screenshots.
+      </div>
+    </div>
+  </nav>
+
+  <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden md:hidden"></div>
+
+  <main class="flex-1 h-full overflow-y-auto bg-warm-50 pt-16 md:pt-0 relative">
+    <div class="max-w-5xl mx-auto p-6 md:p-12 pb-24" id="main-content"></div>
+  </main>
+
+  <script>
+    const refs = (n) => `<sup class="footnote">${n}</sup>`;
+
+    const wikiData = {
+      intro: {
+        title: 'Effects of Ketamine on Neural Circuits in Treatment-Resistant Depression',
+        subtitle: 'Interactive Integrative Neuroscience Wiki',
+        introText: 'A short overview of the topic, followed by a numbered table of contents matching the required assignment structure.',
+        content: `
+          <section class="bg-white rounded-3xl shadow-sm border border-warm-100 p-6 md:p-8 mb-8">
+            <p class="text-lg md:text-xl leading-relaxed font-serif text-neuro-900 mb-5">
+              Treatment-resistant depression (TRD) refers to major depressive disorder that does not improve adequately after standard antidepressant treatments. For decades, depression treatment was largely centered on monoamine neurotransmitters such as serotonin, norepinephrine, and dopamine. Ketamine changed this framework because it can reduce depressive symptoms within hours or days rather than weeks, suggesting that depression is not only a disorder of neurotransmitter levels but also a disorder of neural circuit function, synaptic communication, and plasticity.${refs(1)} ${refs(2)}
+            </p>
+            <p class="leading-relaxed text-gray-800">
+              This page reviews ketamine as a rapid-acting antidepressant with a focus on neural circuits. It first summarizes the history of ketamine, then explains why its antidepressant effects are considered rapid and clinically important. The central sections examine depression-related circuits involving the prefrontal cortex, limbic system, functional connectivity, glutamate signaling, and synaptic plasticity. The final section evaluates current evidence and ongoing debates, including questions about durability, safety, biomarkers, and whether ketamine’s benefits depend mainly on direct neurobiological mechanisms, subjective dissociation, or both.
+            </p>
+          </section>
+
+          <section class="grid md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-neuro-900 text-white rounded-3xl p-6 shadow-lg">
+              <h3 class="text-2xl font-serif font-bold mb-3">Central idea</h3>
+              <p class="text-neuro-50 leading-relaxed">
+                Ketamine reframes TRD as a disorder of circuits, synapses, and plasticity, not simply a shortage of monoamine neurotransmitters.
+              </p>
+            </div>
+            <div class="bg-neuro-100 rounded-3xl p-6 border border-neuro-200">
+              <h3 class="text-2xl font-serif font-bold mb-3 text-neuro-900">Table of Contents</h3>
+              <ol class="space-y-2 text-neuro-900">
+                <li>1. History</li>
+                <li>2. Ketamine as a Rapid-Acting Antidepressant</li>
+                <li>3. Neural Circuits Implicated in Depression</li>
+                <li class="ml-5">3.1 Prefrontal Cortex and Limbic Regions</li>
+                <li>4. Neural Circuit Effects of Ketamine</li>
+                <li class="ml-5">4.1 Functional Connectivity</li>
+                <li class="ml-5">4.2 Synaptic Plasticity and Glutamatergic Signaling</li>
+                <li>5. Current Evidence and Ongoing Debates</li>
+                <li>6. References</li>
+              </ol>
+            </div>
+          </section>
+
+          <section class="bg-white rounded-3xl p-6 border border-warm-100 shadow-sm">
+            <h3 class="text-xl font-bold text-neuro-900 mb-4">Visual roadmap</h3>
+            <div class="grid md:grid-cols-4 gap-4 text-sm">
+              <div class="p-4 rounded-2xl bg-warm-100"><strong>Clinical problem</strong><br>TRD persists despite standard antidepressants.</div>
+              <div class="p-4 rounded-2xl bg-neuro-50"><strong>Drug mechanism</strong><br>Ketamine affects glutamate and NMDA receptors.</div>
+              <div class="p-4 rounded-2xl bg-warm-100"><strong>Circuit change</strong><br>Prefrontal, limbic, reward, and DMN activity shift.</div>
+              <div class="p-4 rounded-2xl bg-neuro-50"><strong>Outcome</strong><br>Symptoms may improve rapidly, but durability varies.</div>
+            </div>
+          </section>
+        `
+      },
+
+      history: {
+        title: '1. History: From Anesthetic to Antidepressant',
+        introText: 'Ketamine’s psychiatric importance emerged from a longer medical history involving anesthesia, dissociation, glutamate pharmacology, and later TRD trials.',
+        content: `
+          <p class="mb-6 text-justify leading-relaxed">Ketamine’s history begins before its use in depression. In the 1950s, phencyclidine (PCP) was developed as an anesthetic, but its severe psychological and behavioral side effects limited its clinical usefulness. Ketamine was synthesized in 1962 by Calvin Stevens as a safer alternative, and early human studies led anesthesiologist Edward Domino to describe its unusual state of “dissociative anesthesia.”${refs(3)} Unlike many anesthetics, ketamine could provide analgesia and sedation while preserving airway reflexes and cardiovascular stability, which made it useful in emergency and military settings. It was approved by the U.S. Food and Drug Administration as an anesthetic in 1970 and became widely used in procedural sedation, trauma care, and veterinary medicine.${refs(3)}</p>
+
+          <div class="relative wrap overflow-hidden p-4 h-full mt-8">
+            <div class="absolute border-opacity-20 border-neuro-700 h-full border" style="left: 50%;"></div>
+
+            ${timelineItem('1962', 'Synthesis', 'Calvin Stevens synthesizes ketamine as a safer PCP alternative.', false)}
+            ${timelineItem('1970', 'FDA Approval', 'Ketamine is approved as an anesthetic and used in military/trauma settings.', true)}
+            ${timelineItem('2000', 'First Depression Trial', 'Berman et al. publish controlled evidence of rapid antidepressant effects.', false)}
+            ${timelineItem('2006', 'TRD Replication', 'Zarate et al. replicate rapid effects in treatment-resistant depression.', true)}
+            ${timelineItem('2019', 'Esketamine Approval', 'FDA approves intranasal esketamine for TRD with monitoring requirements.', false)}
+          </div>
+
+          <div id="timeline-detail-box" class="mt-8 p-6 bg-white rounded-2xl shadow-sm border border-gray-200 hidden"></div>
+
+          <p class="mt-8 text-justify leading-relaxed">Ketamine’s psychiatric history developed more slowly. Because it can produce dissociation and perceptual changes, early researchers used it to model aspects of psychosis and altered consciousness. At the same time, its pharmacology drew attention because it blocked the N-methyl-D-aspartate receptor (NMDAR), a glutamate receptor involved in excitatory neurotransmission, learning, memory, and synaptic plasticity. This was important because most antidepressants at the time targeted monoamine systems and required several weeks to show benefit. Ketamine suggested a different possibility: rapid changes in glutamate signaling could shift the activity of mood-related circuits more quickly than conventional antidepressants.</p>
+
+          <p class="mt-4 text-justify leading-relaxed">The modern antidepressant literature began with a small controlled trial by Berman and colleagues in 2000, which found that a single subanesthetic intravenous ketamine infusion produced rapid antidepressant effects in patients with depression.${refs(1)} Zarate and colleagues later replicated rapid antidepressant effects in treatment-resistant depression, strengthening the idea that ketamine could produce clinically meaningful improvement even when other treatments had failed.${refs(2)} In 2019, intranasal esketamine, the S-enantiomer of ketamine, was approved for adults with treatment-resistant depression in conjunction with an oral antidepressant.${refs(4)}</p>
+        `
+      },
+
+      rapid: {
+        title: '2. Ketamine as a Rapid-Acting Antidepressant',
+        introText: 'This section explains why ketamine’s time course is clinically unusual compared with standard antidepressants.',
+        content: `
+          <p class="mb-6 text-justify leading-relaxed">Ketamine is considered a rapid-acting antidepressant because its effects can emerge within hours, whereas selective serotonin reuptake inhibitors and other conventional antidepressants often require several weeks. In many clinical trials, patients receive a subanesthetic dose of intravenous ketamine, commonly 0.5 mg/kg over about 40 minutes, and symptom improvement is assessed over the next several hours to days.${refs(1)} ${refs(2)} The speed of response is especially important in TRD because these patients have already experienced limited relief from standard treatments.</p>
+
+          <div class="bg-white p-5 rounded-3xl shadow-sm border border-warm-100 mb-8">
+            <h3 class="text-center font-bold text-neuro-900 mb-1">Symptom Severity Over Time: Ketamine vs. SSRI</h3>
+            <p class="text-center text-xs text-gray-500 mb-4">Illustrative MADRS-style trajectory, lower score means fewer symptoms</p>
+            <div class="chart-container"><canvas id="rapidActionChart"></canvas></div>
+            <p class="mt-4 text-sm text-gray-600 bg-neuro-50 p-3 rounded-2xl"><strong>How to read it:</strong> Ketamine’s curve drops within hours, while conventional antidepressant improvement is usually slower and measured over weeks.</p>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-4 mb-8">
+            <div class="bg-neuro-900 text-white rounded-3xl p-5"><div class="text-3xl font-bold">Hours</div><p class="text-sm text-neuro-50 mt-2">Initial improvement may begin rapidly after treatment.</p></div>
+            <div class="bg-neuro-100 rounded-3xl p-5"><div class="text-3xl font-bold text-neuro-900">Days</div><p class="text-sm text-neuro-900 mt-2">Many studies assess peak early response around 24 hours.</p></div>
+            <div class="bg-warm-100 rounded-3xl p-5"><div class="text-3xl font-bold text-neuro-900">Weeks</div><p class="text-sm text-neuro-900 mt-2">Benefits often fade without repeated dosing or maintenance planning.</p></div>
+          </div>
+
+          <p class="text-justify leading-relaxed">The rapid effect of ketamine does not mean that it is a simple cure. A single infusion often produces improvement that is strongest during the first day or first week, then may fade without repeated treatment or maintenance strategies.${refs(5)} This pattern distinguishes ketamine from traditional antidepressants in two ways. First, the onset is unusually fast. Second, the durability of a single treatment is often limited. As a result, ketamine research focuses not only on acute response but also on relapse prevention, repeated dosing protocols, psychotherapy integration, and long-term safety.</p>
+
+          <p class="mt-4 text-justify leading-relaxed">One leading explanation is that ketamine produces a brief surge in glutamate release, especially through effects on inhibitory interneurons. By blocking NMDARs on GABA interneurons, ketamine may reduce inhibition and temporarily increase excitatory glutamate signaling in cortical circuits.${refs(6)} This glutamate burst can stimulate AMPA receptors, which then activate downstream pathways related to synaptic growth, protein synthesis, and neuroplasticity.${refs(7)}</p>
+        `
+      },
+
+      circuits: {
+        title: '3. Neural Circuits Implicated in Depression',
+        introText: 'Depression involves distributed circuits, including prefrontal, limbic, reward, hippocampal, anterior cingulate, and default mode systems.',
+        content: `
+          <p class="mb-6 text-justify leading-relaxed">Depression involves distributed neural circuits rather than one isolated brain region. Major depressive disorder is associated with altered activity and connectivity among the prefrontal cortex, anterior cingulate cortex, hippocampus, amygdala, striatum, thalamus, and default mode network.${refs(8)} ${refs(9)} These regions support mood regulation, reward processing, cognitive control, threat detection, memory, and self-referential thought. When these systems become dysregulated, patients may experience low mood, anhedonia, rumination, impaired concentration, guilt, and reduced motivation.</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
+            ${regionCard('pfc', '🧠', 'Prefrontal Cortex', 'Cognitive control, planning, and emotion regulation.', '<strong>In depression:</strong> reduced regulatory control and stress-related synaptic weakening.<br><br><strong>Ketamine relevance:</strong> proposed rapid synaptic restoration in prefrontal networks.')}
+            ${regionCard('amygdala', '⚠️', 'Amygdala', 'Threat detection and emotional salience.', '<strong>In depression:</strong> heightened response to negative emotional information.<br><br><strong>Ketamine relevance:</strong> may reduce limbic dominance by improving prefrontal regulation.')}
+            ${regionCard('hippocampus', '🧩', 'Hippocampus', 'Memory, context, and stress regulation.', '<strong>In depression:</strong> stress-related plasticity changes and impaired contextual processing.<br><br><strong>Ketamine relevance:</strong> may influence memory, context, and stress-related circuits.')}
+            ${regionCard('acc', '🎯', 'Anterior Cingulate Cortex', 'Emotion, attention, and conflict monitoring.', '<strong>In depression:</strong> altered salience and regulatory processing.<br><br><strong>Ketamine relevance:</strong> studied as a possible response predictor, though findings are not definitive.')}
+            ${regionCard('striatum', '⭐', 'Ventral Striatum', 'Reward, motivation, and pleasure.', '<strong>In depression:</strong> blunted reward signaling and anhedonia.<br><br><strong>Ketamine relevance:</strong> may help restore reward responsiveness in some patients.')}
+            ${regionCard('dmn', '🕸️', 'Default Mode Network', 'Self-referential thought and rumination.', '<strong>In depression:</strong> excessive self-focused rumination and hyperconnectivity.<br><br><strong>Ketamine relevance:</strong> may reduce rigid, maladaptive self-referential patterns.')}
+          </div>
+
+          <div class="bg-warm-100 p-4 rounded-2xl text-sm text-neuro-900 mb-6"><strong>Interaction:</strong> Click each circuit card to see how that region contributes to TRD and why it matters for ketamine.</div>
+
+          <h3 class="text-2xl font-serif font-bold mt-8 mb-4 text-neuro-900">3.1 Prefrontal Cortex and Limbic Regions</h3>
+          <p class="text-justify leading-relaxed">A useful way to understand depression is through an imbalance between top-down control and bottom-up emotional reactivity. Prefrontal regions normally help regulate limbic responses by evaluating context, inhibiting excessive threat responses, and guiding flexible behavior. Limbic regions such as the amygdala and hippocampus detect emotional salience and store associations between experiences and affective meaning. In depression, prefrontal regulation may weaken while limbic responses to negative stimuli become exaggerated or persistent.${refs(9)}</p>
+
+          <p class="mt-4 text-justify leading-relaxed">The prefrontal cortex is central to ketamine’s proposed antidepressant mechanism. In depression, chronic stress can reduce dendritic branching and synaptic density in prefrontal regions, impairing cognitive flexibility and emotional regulation.${refs(8)} Animal studies show that ketamine can rapidly increase synaptic proteins and spine formation in the medial prefrontal cortex, suggesting that antidepressant effects may involve structural and functional restoration of cortical circuits.${refs(7)} ${refs(10)}</p>
+        `
+      },
+
+      effects: {
+        title: '4. Neural Circuit Effects of Ketamine',
+        introText: 'Ketamine’s effects bridge molecular receptor blockade with large-scale network changes.',
+        content: `
+          <p class="mb-6 text-justify leading-relaxed">Ketamine’s neural circuit effects can be understood at several levels. At the receptor level, ketamine blocks NMDARs. At the cellular level, it shifts glutamate signaling, increases AMPA receptor throughput, and activates plasticity-related cascades. At the synaptic level, it may promote spine formation and strengthen excitatory synapses in cortical circuits. At the network level, it may alter connectivity among prefrontal, limbic, reward, and default mode systems. These levels are profoundly interconnected: molecular events initiate changes in synaptic strength, and these synaptic adaptations ultimately reshape large-scale network function.</p>
+
+          <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-3xl p-6 border border-warm-100 shadow-sm">
+              <h3 class="text-xl font-bold text-neuro-900 mb-3">Prefrontal-limbic control</h3>
+              <p class="text-sm leading-relaxed text-gray-700">If depression involves weak prefrontal regulation of limbic emotional responses, ketamine-induced strengthening or normalization of this circuit could help restore emotional control.</p>
+            </div>
+            <div class="bg-white rounded-3xl p-6 border border-warm-100 shadow-sm">
+              <h3 class="text-xl font-bold text-neuro-900 mb-3">Default mode flexibility</h3>
+              <p class="text-sm leading-relaxed text-gray-700">Ketamine may reduce maladaptive default mode network dominance, helping patients disengage from repetitive negative self-referential thought.</p>
+            </div>
+            <div class="bg-white rounded-3xl p-6 border border-warm-100 shadow-sm">
+              <h3 class="text-xl font-bold text-neuro-900 mb-3">Reward circuitry</h3>
+              <p class="text-sm leading-relaxed text-gray-700">Effects on prefrontal-striatal circuits may relate to improved motivation, emotional range, and reduced anhedonia in some patients.</p>
+            </div>
+            <div class="bg-white rounded-3xl p-6 border border-warm-100 shadow-sm">
+              <h3 class="text-xl font-bold text-neuro-900 mb-3">Network reset model</h3>
+              <p class="text-sm leading-relaxed text-gray-700">Ketamine may temporarily destabilize rigid depressive network patterns, allowing new patterns of connectivity and emotional processing to emerge.</p>
+            </div>
+          </div>
+        `
+      },
+
+      connectivity: {
+        title: '4.1 Functional Connectivity',
+        introText: 'Functional connectivity focuses on how brain regions communicate as networks, not just how active one region is by itself.',
+        content: `
+          <p class="mb-6 text-justify leading-relaxed">Functional connectivity refers to coordinated activity between brain regions. In depression, functional connectivity studies often find altered communication among the default mode network, salience network, executive control network, limbic regions, and reward circuits.${refs(9)} Ketamine may change depression by modifying how these networks communicate rather than by increasing or decreasing activity in one region alone. This is why imaging studies increasingly examine connectivity patterns before and after treatment rather than looking for a single “depression center” in the brain.</p>
+
+          <div class="bg-neuro-50 rounded-3xl p-6 border border-neuro-100 shadow-sm mb-6">
+            <h3 class="font-bold text-neuro-900 mb-2">Network Resets Post-Treatment</h3>
+            <p class="text-sm text-gray-700 leading-relaxed">
+              Research frequently notes that immediately following ketamine infusion, there is a measurable "uncoupling" or reset within the Default Mode Network (DMN), a system heavily implicated in depressive rumination. By temporarily taking this network "offline" or reducing its dominance, ketamine provides a window for global functional networks to re-establish healthier, more flexible communication pathways.
+            </p>
+          </div>
+
+          <p class="mt-4 text-justify leading-relaxed">Human imaging results vary depending on dose, timing, patient population, imaging task, and whether scans are collected during acute dissociation or after symptoms improve. Because of this, the strongest conclusion is not that ketamine always produces one specific connectivity pattern, but that its antidepressant effects are closely tied to flexible changes in distributed mood-related networks.</p>
+        `
+      },
+
+      plasticity: {
+        title: '4.2 Synaptic Plasticity and Glutamatergic Signaling',
+        introText: 'This section explains the glutamate burst, AMPA receptor activation, BDNF, mTOR, and synaptogenesis model.',
+        content: `
+          <p class="mb-6 text-justify leading-relaxed">The most influential mechanistic model of ketamine focuses on glutamate signaling and synaptic plasticity. Ketamine blocks NMDARs, but the antidepressant effect is not thought to result simply from reduced excitation. Instead, ketamine may preferentially block NMDARs on inhibitory interneurons, causing a brief disinhibition of pyramidal neurons and a glutamate surge.${refs(6)} This surge increases AMPA receptor activation, which appears necessary for many antidepressant-like effects in preclinical studies.${refs(7)}</p>
+
+          <div class="bg-white p-6 border border-gray-200 rounded-3xl shadow-sm mb-8">
+            <h3 class="font-bold text-neuro-700 mb-4 border-b pb-2 text-xl">Molecular cascade</h3>
+            <ol class="space-y-4 text-sm text-gray-800">
+              <li class="flex"><span class="number-badge">1</span><span><strong>NMDAR blockade:</strong> ketamine blocks NMDA receptors, especially those involved in inhibitory control.</span></li>
+              <li class="flex"><span class="number-badge">2</span><span><strong>Disinhibition:</strong> reduced GABAergic inhibition allows pyramidal neurons to release more glutamate.</span></li>
+              <li class="flex"><span class="number-badge">3</span><span><strong>Glutamate burst:</strong> brief excitatory signaling increases AMPA receptor throughput.</span></li>
+              <li class="flex"><span class="number-badge">4</span><span><strong>Plasticity pathways:</strong> AMPA activation supports BDNF release, TrkB signaling, and mTOR-related protein synthesis.</span></li>
+              <li class="flex"><span class="number-badge">5</span><span><strong>Synaptogenesis:</strong> new synaptic proteins and dendritic spine changes may restore stress-weakened cortical circuits.</span></li>
+            </ol>
+          </div>
+
+          <div class="bg-white p-5 rounded-3xl shadow-sm border border-warm-100 mb-8">
+            <h3 class="text-center font-bold text-neuro-900 mb-1">Relative Synaptic Plasticity Markers</h3>
+            <p class="text-center text-xs text-gray-500 mb-4">Illustrative pattern based on preclinical plasticity models</p>
+            <div class="chart-container"><canvas id="plasticityChart"></canvas></div>
+          </div>
+
+          <p class="text-justify leading-relaxed">Downstream of AMPA receptor activation, ketamine influences several plasticity-related pathways. One is brain-derived neurotrophic factor (BDNF), a protein involved in neuronal survival, synaptic growth, and activity-dependent plasticity. Another is mammalian target of rapamycin complex 1 (mTORC1), a signaling pathway involved in protein synthesis and synapse formation. Li and colleagues found that ketamine rapidly activated mTOR signaling and increased synaptic proteins and spine density in the prefrontal cortex of rodents.${refs(10)}</p>
+
+          <p class="mt-4 text-justify leading-relaxed">Another model involves eukaryotic elongation factor 2 kinase. Autry and colleagues proposed that NMDAR blockade at rest can reduce eEF2 kinase activity, increasing translation of BDNF and producing rapid antidepressant-like effects.${refs(11)} More recent work has also examined ketamine metabolites, including hydroxynorketamine, which may produce antidepressant-like effects through mechanisms that are not identical to ketamine’s original NMDAR blockade model.${refs(12)}</p>
+        `
+      },
+
+      debates: {
+        title: '5. Current Evidence and Ongoing Debates',
+        introText: 'Ketamine has changed depression research, but unresolved questions remain about durability, safety, mechanism, subjective effects, and biomarkers.',
+        content: `
+          <p class="mb-6 text-justify leading-relaxed">The evidence supporting ketamine’s rapid antidepressant effect is strong enough to have changed depression research, but several questions remain unresolved. First, durability is a major issue. Many patients improve quickly after ketamine, but relapse can occur after days or weeks unless treatment is repeated or combined with other strategies.${refs(5)} This raises practical questions about maintenance dosing, long-term safety, cost, and how to integrate ketamine with psychotherapy or conventional antidepressants.</p>
+
+          <div class="space-y-4 mb-8">
+            ${accordion('acc1', 'Duration of efficacy', 'A single intravenous infusion typically produces rapid improvement within 24 hours, but the effect often fades within 7 to 14 days. To maintain the response, clinical protocols often involve an acute phase of repeated infusions (e.g., twice weekly for four weeks) followed by a tapering maintenance phase. However, the optimal long-term maintenance strategy—whether it involves spacing out ketamine treatments, transitioning to oral medications, or integrating targeted psychotherapy—remains a subject of intense ongoing research.')}
+            
+            ${accordion('acc2', 'Safety and monitoring', 'Ketamine administration requires careful clinical oversight. Acute side effects frequently include dissociation, sedation, transient blood pressure elevation, and nausea. Because of these risks, regulatory approvals like the FDA’s ruling on esketamine mandate a Risk Evaluation and Mitigation Strategy (REMS). Patients must be monitored in a certified healthcare setting for at least two hours post-administration. There are also long-term concerns regarding abuse liability and potential bladder toxicity (ulcerative cystitis) with chronic, unmonitored use.')}
+            
+            ${accordion('acc3', 'Subjective experience (The "Trip")', 'Does a patient need to experience dissociation to get better? Some clinical studies suggest a positive correlation between the intensity of the dissociative experience and the degree of antidepressant response, hinting that the altered state of consciousness might be therapeutically relevant, perhaps akin to psychedelic-assisted therapy. Conversely, other researchers argue that the neuroplastic effects can occur independently of the subjective "trip," viewing dissociation merely as an off-target side effect of NMDAR antagonism.')}
+            
+            ${accordion('acc4', 'Biomarkers for treatment response', 'Given that ketamine does not work for everyone (response rates hover around 50-70% in TRD), finding predictive biomarkers is a major clinical priority. Researchers are investigating baseline resting-state fMRI connectivity, EEG signatures (such as theta or gamma band power), peripheral inflammation markers, and blood levels of BDNF. While promising patterns are emerging, no single biomarker is currently robust or accessible enough to be used for routine patient selection.')}
+            
+            ${accordion('acc5', 'Mechanism debates: Beyond Glutamate', 'While the glutamate-burst and synaptic plasticity model is the most dominant, competing theories exist. For instance, some research highlights the role of ketamine metabolites, like hydroxynorketamine (HNK), which may produce antidepressant effects without blocking NMDA receptors. Additionally, controversial human studies have shown that pre-treatment with naltrexone (an opioid antagonist) can block ketamine’s antidepressant effects, suggesting that endogenous opioid system activation may be a crucial, previously overlooked component of its mechanism.')}
+          </div>
+
+          <p class="text-justify leading-relaxed">Safety and regulation remain central concerns. Ketamine can cause dissociation, sedation, elevated blood pressure, nausea, perceptual changes, and potential misuse. Esketamine is administered under a Risk Evaluation and Mitigation Strategy program in certified clinical settings, reflecting concerns about sedation, dissociation, and abuse potential.${refs(4)} Off-label or compounded ketamine raises additional concerns because dosing, monitoring, and product quality may vary.</p>
+
+          <p class="mt-4 text-justify leading-relaxed">Finally, ketamine raises broader questions about how depression should be understood. Its rapid effects challenge the older idea that antidepressant response must depend mainly on slow monoamine changes. Instead, ketamine supports a model in which depression involves impaired plasticity and maladaptive circuit dynamics. By rapidly influencing glutamate signaling, synaptic strength, and network connectivity, ketamine may temporarily restore flexibility to systems that have become rigid under chronic stress and depression. The most balanced conclusion is that ketamine is neither a miracle cure nor merely a short-term anesthetic repurposed for mood. It is a powerful research tool and a clinically important treatment that has reframed depression as a disorder of circuits, synapses, and plasticity.</p>
+        `
+      },
+
+      references: {
+        title: '6. References',
+        introText: 'Scientific literature referenced throughout this wiki.',
+        content: `
+          <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-200 text-sm leading-relaxed">
+            <ol class="space-y-4 list-decimal ml-5 text-gray-800">
+              <li>Berman RM, Cappiello A, Anand A, Oren DA, Heninger GR, Charney DS, Krystal JH. Antidepressant effects of ketamine in depressed patients. <em>Biol Psychiatry</em>. 2000;47(4):351-354.</li>
+              <li>Zarate CA Jr, Singh JB, Carlson PJ, Brutsche NE, Ameli R, Luckenbaugh DA, Charney DS, Manji HK. A randomized trial of an N-methyl-D-aspartate antagonist in treatment-resistant major depression. <em>Arch Gen Psychiatry</em>. 2006;63(8):856-864.</li>
+              <li>Li L, Vlisides PE. Ketamine: 50 years of modulating the mind. <em>Front Hum Neurosci</em>. 2016;10:612.</li>
+              <li>U.S. Food and Drug Administration. Spravato (esketamine) nasal spray prescribing information. Silver Spring (MD): U.S. Food and Drug Administration; 2019.</li>
+              <li>Murrough JW, Iosifescu DV, Chang LC, Al Jurdi RK, Green CE, Perez AM, Iqbal S, Pillemer S, Foulkes A, Shah A, Charney DS, Mathew SJ. Antidepressant efficacy of ketamine in treatment-resistant major depression: a two-site randomized controlled trial. <em>Am J Psychiatry</em>. 2013;170(10):1134-1142.</li>
+              <li>Duman RS, Aghajanian GK. Synaptic dysfunction in depression: potential therapeutic targets. <em>Science</em>. 2012;338(6103):68-72.</li>
+              <li>Abdallah CG, Sanacora G, Duman RS, Krystal JH. Ketamine and rapid-acting antidepressants: a window into a new neurobiology for mood disorder therapeutics. <em>Annu Rev Med</em>. 2015;66:509-523.</li>
+              <li>Price JL, Drevets WC. Neural circuits underlying the pathophysiology of mood disorders. <em>Trends Cogn Sci</em>. 2012;16(1):61-71.</li>
+              <li>Kaiser RH, Andrews-Hanna JR, Wager TD, Pizzagalli DA. Large-scale network dysfunction in major depressive disorder: a meta-analysis of resting-state functional connectivity. <em>JAMA Psychiatry</em>. 2015;72(6):603-611.</li>
+              <li>Li N, Lee B, Liu RJ, Banasr M, Dwyer JM, Iwata M, Li XY, Aghajanian G, Duman RS. mTOR-dependent synapse formation underlies the rapid antidepressant effects of NMDA antagonists. <em>Science</em>. 2010;329(5994):959-964.</li>
+              <li>Autry AE, Adachi M, Nosyreva E, Na ES, Los MF, Cheng PF, Kavalali ET, Monteggia LM. NMDA receptor blockade at rest triggers rapid behavioural antidepressant responses. <em>Nature</em>. 2011;475(7354):91-95.</li>
+              <li>Zanos P, Moaddel R, Morris PJ, Georgiou P, Fischell J, Elmer GI, Alkondon M, Yuan P, Pribut HJ, Singh NS, Dossou KSS, Fang Y, Huang XP, Mayo CL, Wainer IW, Albuquerque EX, Thompson SM, Thomas CJ, Zarate CA Jr, Gould TD. NMDAR inhibition-independent antidepressant actions of ketamine metabolites. <em>Nature</em>. 2016;533(7604):481-486.</li>
+              <li>Wilkinson ST, Ballard ED, Bloch MH, Mathew SJ, Murrough JW, Feder A, Sos P, Wang G, Zarate CA Jr, Sanacora G. The effect of a single dose of intravenous ketamine on suicidal ideation: a systematic review and individual participant data meta-analysis. <em>Am J Psychiatry</em>. 2018;175(2):150-158.</li>
+              <li>Krystal JH, Abdallah CG, Sanacora G, Charney DS, Duman RS. Ketamine: a paradigm shift for depression research and treatment. <em>Neuron</em>. 2019;101(5):774-778.</li>
+            </ol>
+          </div>
+        `
+      }
+    };
+
+    const timelineData = {
+      '1962': ['1962: Ketamine synthesis', 'Calvin Stevens synthesized ketamine as CI-581 while searching for a safer anesthetic alternative to PCP.'],
+      '1970': ['1970: FDA approval', 'Ketamine was approved for anesthetic use and became valuable in emergency and military contexts because it preserved airway reflexes and cardiovascular stability.'],
+      '2000': ['2000: Rapid antidepressant signal', 'Berman and colleagues published one of the first controlled reports showing rapid antidepressant effects after subanesthetic ketamine.'],
+      '2006': ['2006: TRD replication', 'Zarate and colleagues replicated rapid antidepressant effects in treatment-resistant depression, strengthening the clinical importance of the finding.'],
+      '2019': ['2019: Esketamine approval', 'Intranasal esketamine was approved for treatment-resistant depression with required clinical monitoring.']
+    };
+
+    function timelineItem(year, title, text, reverse) {
+      return `
+        <div class="mb-8 flex justify-between ${reverse ? 'flex-row-reverse' : ''} items-center w-full">
+          <div class="order-1 w-5/12"></div>
+          <button class="z-20 flex items-center order-1 bg-neuro-500 shadow-xl w-14 h-14 rounded-full justify-center text-white font-bold cursor-pointer transition transform hover:scale-110 hover:bg-neuro-700" onclick="showTimelineDetail('${year}')">${year}</button>
+          <div class="order-1 bg-white rounded-2xl shadow-sm border border-warm-100 w-5/12 px-5 py-4">
+            <h3 class="mb-1 font-bold text-neuro-900 text-lg">${title}</h3>
+            <p class="text-sm leading-snug text-gray-700">${text}</p>
+          </div>
+        </div>`;
+    }
+
+    function regionCard(id, icon, title, summary, detail) {
+      return `
+        <div class="brain-region-card bg-white p-5 rounded-3xl shadow-sm border border-gray-100" onclick="toggleCircuitDetail('${id}')">
+          <div class="text-4xl mb-3">${icon}</div>
+          <h3 class="font-bold text-lg text-neuro-900">${title}</h3>
+          <p class="text-sm text-gray-600 mt-2">${summary}</p>
+          <div id="detail-${id}" class="hidden mt-4 pt-4 border-t border-gray-200 text-sm leading-relaxed">${detail}</div>
+        </div>`;
+    }
+
+    function accordion(id, title, content) {
+      return `
+        <div class="border border-gray-200 rounded-2xl bg-white overflow-hidden shadow-sm">
+          <button class="w-full text-left px-6 py-4 font-bold text-neuro-900 bg-gray-50 hover:bg-gray-100 focus:outline-none flex justify-between items-center" onclick="toggleAccordion('${id}')">
+            <span>${title}</span><span id="icon-${id}" class="text-xl">+</span>
+          </button>
+          <div id="content-${id}" class="px-6 py-4 hidden text-sm text-gray-700 text-justify leading-relaxed">${content}</div>
+        </div>`;
+    }
+
+    let currentChart1 = null;
+    let currentChart2 = null;
+
+    function navigate(sectionId) {
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('bg-neuro-700');
+        if (link.getAttribute('data-target') === sectionId) link.classList.add('bg-neuro-700');
+      });
+
+      document.getElementById('sidebar').classList.add('-translate-x-full');
+      document.getElementById('sidebar-overlay').classList.add('hidden');
+
+      const data = wikiData[sectionId];
+      const container = document.getElementById('main-content');
+
+      container.innerHTML = `
+        <div class="view-content">
+          <div class="mb-8">
+            <p class="text-xs uppercase tracking-[0.2em] text-neuro-500 font-bold mb-3">Interactive Wiki</p>
+            <h2 class="text-3xl md:text-5xl font-serif font-bold text-neuro-900 mb-3 leading-tight">${data.title}</h2>
+            ${data.subtitle ? `<h3 class="text-xl text-neuro-700 mb-5">${data.subtitle}</h3>` : ''}
+            <p class="text-lg text-gray-500 italic border-b border-gray-200 pb-5">${data.introText}</p>
+          </div>
+          <div class="text-gray-800 leading-relaxed">${data.content}</div>
+        </div>`;
+
+      if (sectionId === 'rapid') initRapidActionChart();
+      if (sectionId === 'plasticity') initPlasticityChart();
+      document.querySelector('main').scrollTo(0, 0);
+    }
+
+    function showTimelineDetail(year) {
+      const box = document.getElementById('timeline-detail-box');
+      const [title, body] = timelineData[year];
+      box.innerHTML = `<h4 class="text-xl font-bold mb-2 text-neuro-900">${title}</h4><p class="text-gray-700 text-justify leading-relaxed">${body}</p>`;
+      box.classList.remove('hidden');
+      box.classList.add('view-content');
+    }
+
+    function toggleCircuitDetail(region) {
+      const detail = document.getElementById(`detail-${region}`);
+      const card = detail.parentElement;
+      const isHidden = detail.classList.contains('hidden');
+
+      document.querySelectorAll('[id^="detail-"]').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.brain-region-card').forEach(el => el.classList.remove('brain-region-active'));
+
+      if (isHidden) {
+        detail.classList.remove('hidden');
+        card.classList.add('brain-region-active');
+      }
+    }
+
+    function toggleAccordion(id) {
+      const content = document.getElementById(`content-${id}`);
+      const icon = document.getElementById(`icon-${id}`);
+      const hidden = content.classList.contains('hidden');
+      content.classList.toggle('hidden');
+      icon.textContent = hidden ? '−' : '+';
+    }
+
+    function initRapidActionChart() {
+      const ctx = document.getElementById('rapidActionChart').getContext('2d');
+      if (currentChart1) currentChart1.destroy();
+      currentChart1 = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Baseline', '2 Hours', '24 Hours', 'Day 3', 'Day 7', 'Week 2', 'Week 4', 'Week 8'],
+          datasets: [
+            { label: 'Ketamine', data: [35, 22, 15, 16, 18, 22, 27, 30], borderColor: '#4a7c73', backgroundColor: 'rgba(74,124,115,0.18)', borderWidth: 3, tension: 0.4, pointRadius: 5, fill: true },
+            { label: 'Standard SSRI', data: [35, 35, 34, 33, 31, 28, 22, 17], borderColor: '#94a3b8', backgroundColor: 'transparent', borderWidth: 2, borderDash: [6, 5], tension: 0.4, pointRadius: 4 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top' } },
+          scales: {
+            y: { title: { display: true, text: 'Depression Severity Score' }, min: 0, max: 40 },
+            x: { title: { display: true, text: 'Time After Treatment Starts' } }
+          }
+        }
+      });
+    }
+
+    function initPlasticityChart() {
+      const ctx = document.getElementById('plasticityChart').getContext('2d');
+      if (currentChart2) currentChart2.destroy();
+      currentChart2 = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Dendritic Spine Density', 'BDNF Signaling', 'PSD-95 Expression'],
+          datasets: [
+            { label: 'Healthy Control', data: [100, 100, 100], backgroundColor: '#e2e8f0' },
+            { label: 'TRD / Chronic Stress', data: [60, 55, 65], backgroundColor: '#94a3b8' },
+            { label: 'Post-Ketamine', data: [95, 120, 105], backgroundColor: '#4a7c73' }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top' } },
+          scales: { y: { title: { display: true, text: 'Relative Level (% of Control)' }, min: 0, max: 140 } }
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('mobile-menu-btn');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      function toggleMenu() {
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+      }
+      btn.addEventListener('click', toggleMenu);
+      overlay.addEventListener('click', toggleMenu);
+      navigate('intro');
+    });
+  </script>
+</body>
+</html>
