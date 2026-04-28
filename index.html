@@ -110,10 +110,6 @@
         <li><button onclick="navigate('debates')" class="nav-link w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-neuro-700" data-target="debates">⚖ 5. Evidence & Debates</button></li>
         <li><button onclick="navigate('references')" class="nav-link w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-neuro-700" data-target="references">📚 6. References</button></li>
       </ul>
-
-      <div class="mt-8 p-4 bg-neuro-700/50 rounded-2xl text-xs leading-relaxed text-neuro-100">
-        <strong class="text-white">Wiki tip:</strong> Use this as a visual version for studying or presentation. For Moodle, you can paste the written text and add figures/charts as screenshots.
-      </div>
     </div>
   </nav>
 
@@ -130,9 +126,10 @@
       intro: {
         title: 'Effects of Ketamine on Neural Circuits in Treatment-Resistant Depression',
         subtitle: 'Interactive Integrative Neuroscience Wiki',
-        introText: 'A short overview of the topic, followed by a numbered table of contents matching the required assignment structure.',
+        introText: '',
         content: `
           <section class="bg-white rounded-3xl shadow-sm border border-warm-100 p-6 md:p-8 mb-8">
+            <h3 class="text-2xl font-serif font-bold text-neuro-900 mb-4">Introduction</h3>
             <p class="text-lg md:text-xl leading-relaxed font-serif text-neuro-900 mb-5">
               Treatment-resistant depression (TRD) refers to major depressive disorder that does not improve adequately after standard antidepressant treatments. For decades, depression treatment was largely centered on monoamine neurotransmitters such as serotonin, norepinephrine, and dopamine. Ketamine changed this framework because it can reduce depressive symptoms within hours or days rather than weeks, suggesting that depression is not only a disorder of neurotransmitter levels but also a disorder of neural circuit function, synaptic communication, and plasticity.${refs(1)} ${refs(2)}
             </p>
@@ -141,37 +138,20 @@
             </p>
           </section>
 
-          <section class="grid md:grid-cols-2 gap-6 mb-8">
-            <div class="bg-neuro-900 text-white rounded-3xl p-6 shadow-lg">
-              <h3 class="text-2xl font-serif font-bold mb-3">Central idea</h3>
-              <p class="text-neuro-50 leading-relaxed">
-                Ketamine reframes TRD as a disorder of circuits, synapses, and plasticity, not simply a shortage of monoamine neurotransmitters.
-              </p>
-            </div>
-            <div class="bg-neuro-100 rounded-3xl p-6 border border-neuro-200">
-              <h3 class="text-2xl font-serif font-bold mb-3 text-neuro-900">Table of Contents</h3>
-              <ol class="space-y-2 text-neuro-900">
-                <li>1. History</li>
-                <li>2. Ketamine as a Rapid-Acting Antidepressant</li>
-                <li>3. Neural Circuits Implicated in Depression</li>
-                <li class="ml-5">3.1 Prefrontal Cortex and Limbic Regions</li>
-                <li>4. Neural Circuit Effects of Ketamine</li>
-                <li class="ml-5">4.1 Functional Connectivity</li>
-                <li class="ml-5">4.2 Synaptic Plasticity and Glutamatergic Signaling</li>
-                <li>5. Current Evidence and Ongoing Debates</li>
-                <li>6. References</li>
-              </ol>
-            </div>
-          </section>
-
-          <section class="bg-white rounded-3xl p-6 border border-warm-100 shadow-sm">
-            <h3 class="text-xl font-bold text-neuro-900 mb-4">Visual roadmap</h3>
-            <div class="grid md:grid-cols-4 gap-4 text-sm">
-              <div class="p-4 rounded-2xl bg-warm-100"><strong>Clinical problem</strong><br>TRD persists despite standard antidepressants.</div>
-              <div class="p-4 rounded-2xl bg-neuro-50"><strong>Drug mechanism</strong><br>Ketamine affects glutamate and NMDA receptors.</div>
-              <div class="p-4 rounded-2xl bg-warm-100"><strong>Circuit change</strong><br>Prefrontal, limbic, reward, and DMN activity shift.</div>
-              <div class="p-4 rounded-2xl bg-neuro-50"><strong>Outcome</strong><br>Symptoms may improve rapidly, but durability varies.</div>
-            </div>
+          <section class="bg-neuro-100 rounded-3xl p-6 border border-neuro-200 mb-8">
+            <h3 class="text-2xl font-serif font-bold mb-3 text-neuro-900">Table of Contents</h3>
+            <p class="text-sm text-neuro-700 mb-4">Click any section below to open it on this page.</p>
+            <ol class="space-y-2 text-neuro-900">
+              <li><button onclick="navigate('history')" class="hover:underline text-left">1. History</button></li>
+              <li><button onclick="navigate('rapid')" class="hover:underline text-left">2. Ketamine as a Rapid-Acting Antidepressant</button></li>
+              <li><button onclick="navigate('circuits')" class="hover:underline text-left">3. Neural Circuits Implicated in Depression</button></li>
+              <li class="ml-5"><button onclick="navigate('circuits')" class="hover:underline text-left">3.1 Prefrontal Cortex and Limbic Regions</button></li>
+              <li><button onclick="navigate('effects')" class="hover:underline text-left">4. Neural Circuit Effects of Ketamine</button></li>
+              <li class="ml-5"><button onclick="navigate('connectivity')" class="hover:underline text-left">4.1 Functional Connectivity</button></li>
+              <li class="ml-5"><button onclick="navigate('plasticity')" class="hover:underline text-left">4.2 Synaptic Plasticity and Glutamatergic Signaling</button></li>
+              <li><button onclick="navigate('debates')" class="hover:underline text-left">5. Current Evidence and Ongoing Debates</button></li>
+              <li><button onclick="navigate('references')" class="hover:underline text-left">6. References</button></li>
+            </ol>
           </section>
         `
       },
@@ -348,7 +328,7 @@
 
       references: {
         title: '6. References',
-        introText: 'Scientific literature referenced throughout this wiki.',
+        introText: '',
         content: `
           <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-200 text-sm leading-relaxed">
             <ol class="space-y-4 list-decimal ml-5 text-gray-800">
@@ -433,7 +413,7 @@
             <p class="text-xs uppercase tracking-[0.2em] text-neuro-500 font-bold mb-3">Interactive Wiki</p>
             <h2 class="text-3xl md:text-5xl font-serif font-bold text-neuro-900 mb-3 leading-tight">${data.title}</h2>
             ${data.subtitle ? `<h3 class="text-xl text-neuro-700 mb-5">${data.subtitle}</h3>` : ''}
-            <p class="text-lg text-gray-500 italic border-b border-gray-200 pb-5">${data.introText}</p>
+            ${data.introText ? `<p class="text-lg text-gray-500 italic border-b border-gray-200 pb-5">${data.introText}</p>` : ''}
           </div>
           <div class="text-gray-800 leading-relaxed">${data.content}</div>
         </div>`;
